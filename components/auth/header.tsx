@@ -1,7 +1,6 @@
 "use client";
 
 import { Poppins } from "next/font/google";
-import { cn } from "@/lib/utils";
 
 const font = Poppins({
 	subsets: ["latin"],
@@ -15,7 +14,7 @@ interface HeaderProps {
 export const Header = ({ label }: HeaderProps) => {
 	return (
 		<div className="w-full flex flex-col gap-y-3 items-center justify-center">
-			<img className="mx-auto w-28 h-28" src="../../app/favicon.ico" />
+			<img className="mx-auto w-28 h-28" src="./public/favicon.ico" />
 
 			<p className="text-muted-foreground text-sm ">{label}</p>
 		</div>
