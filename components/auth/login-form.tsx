@@ -18,37 +18,39 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
+import { useTranslation } from "@/app/i18n/client";
 // import { login } from "@/actions/login";
 
-export const LoginForm = () => {
-	const form = useForm<z.infer<typeof LoginSchema>>({
-		resolver: zodResolver(LoginSchema),
+export const LoginForm = ({ lng }: { lng: string }) => {
+	const { t } = useTranslation(lng);
+	const formSchema = LoginSchema(t);
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: "",
+			email_or_username: "",
 			password: "",
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		// login(values);
 	};
 
 	return (
-		<CardWrapper headerLabel="Welcome Back">
+		<CardWrapper headerLabel={t("welcome_back")}>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 					<div className="space-y-4">
 						<FormField
 							control={form.control}
-							name="email"
+							name="email_or_username"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Email</FormLabel>
+									<FormLabel>{t("email_or_username")}</FormLabel>
 									<FormControl>
 										<Input
 											{...field}
-											type="email"
-											placeholder="john.doe@example.com"
+											placeholder={t("enter_email_or_username")}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -60,7 +62,7 @@ export const LoginForm = () => {
 							name="password"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Password</FormLabel>
+									<FormLabel>{t("password")}</FormLabel>
 									<FormControl>
 										<Input {...field} type="password" placeholder="*******" />
 									</FormControl>
@@ -72,7 +74,7 @@ export const LoginForm = () => {
 					<FormError message="" />
 					<FormSuccess message="" />
 					<Button type="submit" className="w-full">
-						Login
+						{t("login")}
 					</Button>
 				</form>
 			</Form>

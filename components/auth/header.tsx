@@ -15,7 +15,7 @@ interface HeaderProps {
 export const Header = ({ label }: HeaderProps) => {
 	return (
 		<div className="w-full flex flex-col gap-y-3 items-center justify-center">
-			<img className="mx-auto w-28 h-28" src="/favicon.ico" />
+			<img className="mx-auto w-28 h-28" src="../../app/favicon.ico" />
 
 			<p className="text-muted-foreground text-sm ">{label}</p>
 		</div>
