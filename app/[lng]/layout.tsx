@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 import { dir } from "i18next";
 import { languages } from "../i18n/settings";
-// import { SessionProvider } from "next-auth/react";
+import AuthProvider from "@/components/auth/AuthProvider";
 
 export async function generateStaticParams() {
 	return languages.map((lng) => ({ lng }));
@@ -21,10 +21,10 @@ export default function RootLayout({
 	};
 }) {
 	return (
-		// <SessionProvider session={session}>
 		<html lang={lng} dir={dir(lng)}>
-			<body className={inter.className}>{children}</body>
+			<body className={inter.className}>
+				<AuthProvider>{children}</AuthProvider>
+			</body>
 		</html>
-		// </SessionProvider>
 	);
 }

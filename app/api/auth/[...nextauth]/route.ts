@@ -27,28 +27,16 @@ export const authOptions: NextAuthOptions = {
 		}),
 	],
 	secret: process.env.JWT_SECRET,
-	// callbacks: {
-	// 	async jwt({ token, user }) {
-	// 		console.log(token, user);
+	callbacks: {
+		async jwt({ token, user }) {
+			return { ...token, ...user };
+		},
 
-	// 		if (user) {
-	// 			return {
-	// 				token: user.token,
-	// 				user: user.user,
-	// 				permissions: user.permissions,
-	// 				roles: user.roles,
-	// 			};
-	// 		}
-	// 		return token;
-	// 	},
-
-	// 	async session({ session, token }) {
-	// 		session.token = token.token;
-	// 		session.user = token.user;
-	// 		session.permissions = token.permissions;
-	// 		return Promise.resolve(session);
-	// 	},
-	// },
+		async session({ session, token }) {
+			session.user = token as any;
+			return session;
+		},
+	},
 };
 
 const handler = NextAuth(authOptions);
