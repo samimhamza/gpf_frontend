@@ -17,11 +17,15 @@ import { LoginSchema } from "@/schemas";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
 import { useTranslation } from "@/app/i18n/client";
+import { signIn } from "next-auth/react";
+import { useState, useTransition } from "react";
+import { redirect } from "next/navigation";
 // import { login } from "@/actions/login";
 
 export const LoginForm = ({ lng }: { lng: string }) => {
+	const [error, setError] = useState<string | undefined>("");
+	const [isPending, startTransition] = useTransition();
 	const { t } = useTranslation(lng);
 	const formSchema = LoginSchema(t);
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -32,8 +36,18 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		// login(values);
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		setError("");
+		startTransition(async () => {
+			const res = await signIn("credentials", {
+				email_or_username: values.email_or_username,
+				password: values.password,
+				redirect: false,
+			});
+			if (!res?.error) {
+				redirect("/dashboard");
+			}
+		});
 	};
 
 	return (
@@ -51,6 +65,7 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 										<Input
 											{...field}
 											placeholder={t("enter_email_or_username")}
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -64,7 +79,12 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 								<FormItem>
 									<FormLabel>{t("password")}</FormLabel>
 									<FormControl>
-										<Input {...field} type="password" placeholder="*******" />
+										<Input
+											{...field}
+											type="password"
+											placeholder="*******"
+											disabled={isPending}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -72,8 +92,7 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 						/>
 					</div>
 					<FormError message="" />
-					<FormSuccess message="" />
-					<Button type="submit" className="w-full">
+					<Button type="submit" className="w-full" disabled={isPending}>
 						{t("login")}
 					</Button>
 				</form>
