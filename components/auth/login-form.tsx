@@ -91,7 +91,7 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 							)}
 						/>
 					</div>
-					<FormError message="" />
+					<FormError message={error} />
 					<Button type="submit" className="w-full" disabled={isPending}>
 						{t("login")}
 					</Button>

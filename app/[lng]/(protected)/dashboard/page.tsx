@@ -1,7 +1,10 @@
-"use client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const Dashboard = async () => {
-	return <div>Dashboard</div>;
-};
+	const session = await getServerSession(authOptions);
+	console.log(session);
 
+	return <div>dfsd</div>;
+};
 export default Dashboard;
