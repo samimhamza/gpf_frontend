@@ -15,8 +15,6 @@ export function authMiddleware(middleware: CustomMiddleware) {
 		const { nextUrl } = request;
 		const isLoggedIn = !!request.auth;
 
-		console.log(request);
-
 		const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
 		const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
 		const isAuthRoute = authRoutes.includes(nextUrl.pathname);

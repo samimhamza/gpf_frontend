@@ -6,5 +6,8 @@
 	"login": "ورود به سیستم",
 	"enter_email_or_username": "ایمیل یا نام کاربری را وارد نمایید",
 	"email_or_username_required": "ایمیل یا نام کاربری ضروری میباشد",
-	"password_required": "پسورد ضروری میباشد"
+	"password_required": "پسورد ضروری میباشد",
+	"gpf": "بنیاد گل آغا پروانی",
+	"logout": "خروج از برنامه",
+	"change_password": "تغییر رمز کاربری"
 }
