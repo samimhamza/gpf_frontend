@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { dir } from "i18next";
 import { languages } from "../i18n/settings";
 import AuthProvider from "@/components/auth/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 export async function generateStaticParams() {
 	return languages.map((lng) => ({ lng }));
@@ -23,7 +24,10 @@ export default function RootLayout({
 	return (
 		<html lang={lng} dir={dir(lng)}>
 			<body className={inter.className}>
-				<AuthProvider>{children}</AuthProvider>
+				<AuthProvider>
+					<Toaster position="bottom-center" />
+					{children}
+				</AuthProvider>
 			</body>
 		</html>
 	);

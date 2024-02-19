@@ -5,6 +5,9 @@ import { Nav } from "./nav";
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
+import { signOut } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import { postApi } from "@/http/api-http";
 
 const Sidebar = ({
 	children,
@@ -24,6 +27,17 @@ const Sidebar = ({
 		setIsOpen(!isOpen);
 	};
 
+	const logout = async () => {
+		const { res, err } = await postApi("/logout", {});
+		if (res.status == 200) {
+			signOut({
+				redirect: false,
+			});
+			router.push("/auth/login");
+		} else if (err) {
+			toast.error(t("something_went_wrong"));
+		}
+	};
 	return (
 		<div className="relative h-screen  bg-dashboard-content-main-bg text-gray-900">
 			<div
@@ -107,10 +121,7 @@ const Sidebar = ({
 
 										<Menu.Item>
 											<div
-												onClick={() => {
-													// logout();
-													router.push("/");
-												}}
+												onClick={logout}
 												className={
 													"block px-4 cursor-pointer  py-2 text-sm hover:bg-gray-100"
 												}

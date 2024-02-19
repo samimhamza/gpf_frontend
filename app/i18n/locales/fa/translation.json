@@ -9,5 +9,6 @@
 	"password_required": "پسورد ضروری میباشد",
 	"gpf": "بنیاد گل آغا پروانی",
 	"logout": "خروج از برنامه",
-	"change_password": "تغییر رمز کاربری"
+	"change_password": "تغییر رمز کاربری",
+	"something_went_wrong": ".اشتباهی رخ داده است"
 }

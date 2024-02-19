@@ -1,4 +1,8 @@
+"use server";
+
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import axios from "axios";
+import { getServerSession } from "next-auth";
 
 // create an axios instance with default configuration
 const api = axios.create({
@@ -8,11 +12,10 @@ const api = axios.create({
 });
 
 // request interceptor to add authentication token
-api.interceptors.request.use((config) => {
-	const token = localStorage.getItem("token");
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`;
-		// console.log(token)
+api.interceptors.request.use(async (config) => {
+	const data = await getServerSession(authOptions);
+	if (data?.user.token) {
+		config.headers.Authorization = `Bearer ${data.user.token}`;
 	}
 	return config;
 });
@@ -39,65 +42,81 @@ api.interceptors.response.use(
 );
 
 // API methods for making GET and POST requests
-class ApiHttp {
-	static async get(url: string, params: any) {
-		try {
-			const response = await api.get(url, { params });
-			return response.data;
-		} catch (error) {
-			return Promise.reject(error);
-		}
+const getApi = async (url: string, params: Object) => {
+	let res = null;
+	let err = null;
+	try {
+		const response = await api.get(url, { params });
+		res = response;
+	} catch (error) {
+		err = error;
 	}
+	return { res, err };
+};
 
-	static async post(url: string, data: any) {
-		try {
-			const response = await api.post(url, data);
-			return response.data;
-		} catch (error) {
-			return Promise.reject(error);
-		}
+const postApi = async (url: string, data: Object) => {
+	let res = null;
+	let err = null;
+	let status = 404;
+	let loading = false;
+	try {
+		loading = true;
+		const response = await api.post(url, data);
+		// if()
+	} catch (error) {
+		err = error;
 	}
+	return { res, err };
+};
 
-	static async post_with_file(url: string, data: any) {
-		try {
-			const response = await api.post(url, data, {
-				headers: {
-					"Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
-				},
-			});
-			return response.data;
-		} catch (error) {
-			return Promise.reject(error);
-		}
+const postWithFileApi = async (url: string, data: any) => {
+	try {
+		const response = await api.post(url, data, {
+			headers: {
+				"Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+			},
+		});
+		return response.data;
+	} catch (error) {
+		return Promise.reject(error);
 	}
+};
 
-	static async put_with_file(url: string, data: any) {
-		try {
-			const response = await api.put(url, JSON.stringify(data), {
-				headers: {
-					// 'accept': "*/*",
-					"Content-Type": "application/json", // Set the content type to multipart/form-data
-				},
-			});
-			return response.data;
-		} catch (error) {
-			return Promise.reject(error);
-		}
+const putApi = async (url: string, data: any) => {
+	try {
+		const response = await api.post(url, data);
+		return response.data;
+	} catch (error) {
+		return Promise.reject(error);
 	}
+};
 
-	static async delete(url: string) {
-		try {
-			const response = await api.delete(url, {
-				headers: {
-					// 'accept': "*/*",
-					"Content-Type": "application/json", // Set the content type to multipart/form-data
-				},
-			});
-			return response.data;
-		} catch (error) {
-			return Promise.reject(error);
-		}
+const putWithFileApi = async (url: string, data: any) => {
+	try {
+		const response = await api.put(url, JSON.stringify(data), {
+			headers: {
+				// 'accept': "*/*",
+				"Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+			},
+		});
+		return response.data;
+	} catch (error) {
+		return Promise.reject(error);
 	}
-}
+};
 
-export default ApiHttp;
+const deleteApi = async (url: string) => {
+	try {
+		const response = await api.delete(url, {
+			headers: {
+				// 'accept': "*/*",
+				"Content-Type": "application/json", // Set the content type to multipart/form-data
+			},
+		});
+		return response.data;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+export { getApi, postApi, postWithFileApi, putApi, putWithFileApi, deleteApi };
