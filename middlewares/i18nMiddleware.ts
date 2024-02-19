@@ -15,16 +15,15 @@ export function i18nMiddleware(middleware: CustomMiddleware) {
 			request.nextUrl.pathname.indexOf("icon") > -1 ||
 			request.nextUrl.pathname.indexOf("chrome") > -1
 		) {
+			// return response;
 			return middleware(request, event, response);
 		}
 
 		let lng = request.cookies.has(cookieName)
 			? acceptLanguage.get(request.cookies.get(cookieName)?.value)
+			: fallbackLng
+			? fallbackLng
 			: acceptLanguage.get(request.headers.get("Accept-Language"));
-
-		if (!lng) {
-			lng = fallbackLng;
-		}
 
 		// Redirect if lng in path is not supported
 		if (
@@ -43,10 +42,10 @@ export function i18nMiddleware(middleware: CustomMiddleware) {
 			const lngInReferer = languages.find((l) =>
 				refererUrl.pathname.startsWith(`/${l}`)
 			);
-
 			if (lngInReferer) {
 				response.cookies.set(cookieName, lngInReferer);
 			}
+			// return response;
 			return middleware(request, event, response);
 		}
 

@@ -42,31 +42,33 @@ api.interceptors.response.use(
 );
 
 // API methods for making GET and POST requests
-const getApi = async (url: string, params: Object) => {
-	let res = null;
-	let err = null;
+const getApi = async (url: string, params: any) => {
 	try {
 		const response = await api.get(url, { params });
-		res = response;
+		return response.data;
 	} catch (error) {
-		err = error;
+		return Promise.reject(error);
 	}
-	return { res, err };
 };
 
-const postApi = async (url: string, data: Object) => {
-	let res = null;
-	let err = null;
-	let status = 404;
+const postApi = async (url: string, data: any) => {
+	let response = null;
 	let loading = false;
+	let error = null;
+	let status = 404;
 	try {
 		loading = true;
-		const response = await api.post(url, data);
-		// if()
-	} catch (error) {
-		err = error;
+		const res = await api.post(url, data);
+		if (res.status == 201) {
+			response = res.data;
+		}
+		status = res.status;
+		loading = false;
+	} catch (err) {
+		loading = false;
+		error = err;
 	}
-	return { res, err };
+	return { response, status, loading, error };
 };
 
 const postWithFileApi = async (url: string, data: any) => {

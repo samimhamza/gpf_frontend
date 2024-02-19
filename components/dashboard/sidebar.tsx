@@ -6,8 +6,9 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
 import { signOut } from "next-auth/react";
-import { toast } from "react-hot-toast";
 import { postApi } from "@/http/api-http";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const Sidebar = ({
 	children,
@@ -28,14 +29,12 @@ const Sidebar = ({
 	};
 
 	const logout = async () => {
-		const { res, err } = await postApi("/logout", {});
-		if (res.status == 200) {
-			signOut({
+		const { status } = await postApi("/logout", {});
+		if (status == 200) {
+			await signOut({
 				redirect: false,
 			});
 			router.push("/auth/login");
-		} else if (err) {
-			toast.error(t("something_went_wrong"));
 		}
 	};
 	return (

@@ -1,48 +1,60 @@
-// authMiddleware.js
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-import {
-	DEFAULT_LOGIN_REDIRECT,
-	apiAuthPrefix,
-	authRoutes,
-	publicRoutes,
-} from "@/routes";
+
+import { getToken } from "next-auth/jwt";
 import { CustomMiddleware } from "./chain";
+import { languages } from "@/app/i18n/settings";
+import { protectedRoutes, DEFAULT_LOGIN_REDIRECT } from "@/routes";
+
+function getProtectedRoutes(protectedPaths: string[], locales: Array<string>) {
+	let protectedPathsWithLocale = [...protectedPaths];
+
+	protectedPaths.forEach((route) => {
+		locales.forEach(
+			(locale) =>
+				(protectedPathsWithLocale = [
+					...protectedPathsWithLocale,
+					`/${locale}${route}`,
+				])
+		);
+	});
+
+	return protectedPathsWithLocale;
+}
 
 export function authMiddleware(middleware: CustomMiddleware) {
 	return async (request: NextRequest, event: NextFetchEvent) => {
+		// Create a response object to pass down the chain
 		const response = NextResponse.next();
 
-		const { nextUrl } = request;
-		const isLoggedIn = !!request.auth;
+		// const token = await getToken({ req: request });
+		const secret = process.env.JWT_SECRET;
+		const token = await getToken({
+			req: request,
+			secret: secret,
+			cookieName: "next-auth.session-token",
+		});
 
-		const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-		const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-		const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+		// @ts-ignore
+		request.nextauth = request.nextauth || {};
+		// @ts-ignore
+		request.nextauth.token = token;
+		const pathname = request.nextUrl.pathname;
 
-		if (isApiAuthRoute) {
-			return middleware(request, event, response);
+		const protectedPathsWithLocale = getProtectedRoutes(
+			protectedRoutes,
+			languages
+		);
+
+		if (!token && protectedPathsWithLocale.includes(pathname)) {
+			const signInUrl = new URL("/auth/login", request.url);
+			signInUrl.searchParams.set("callbackUrl", pathname);
+			return NextResponse.redirect(signInUrl);
 		}
 
-		if (isAuthRoute) {
-			if (isLoggedIn) {
-				// return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-			}
-			return middleware(request, event, response);
+		if (token && pathname.includes("/auth/login")) {
+			const loginRedirectUrl = new URL(DEFAULT_LOGIN_REDIRECT, request.url);
+			return NextResponse.redirect(loginRedirectUrl);
 		}
-
-		if (!isLoggedIn && !isPublicRoute) {
-			let callbackUrl = nextUrl.pathname;
-			if (nextUrl.search) {
-				callbackUrl += nextUrl.search;
-			}
-
-			const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-
-			// return NextResponse.redirect(
-			// 	new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-			// );
-		}
-
 		return middleware(request, event, response);
 	};
 }
