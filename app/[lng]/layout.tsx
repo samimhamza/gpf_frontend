@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 import { dir } from "i18next";
 import { languages } from "../i18n/settings";
-import AuthProvider from "@/components/auth/AuthProvider";
+import AuthProvider from "@/app/[lng]/AuthProvider";
 import { Toaster } from "react-hot-toast";
 
 export async function generateStaticParams() {
