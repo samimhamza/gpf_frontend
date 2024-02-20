@@ -1,6 +1,6 @@
 "use server";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/auth";
 import axios from "axios";
 import { getServerSession } from "next-auth";
 
@@ -42,33 +42,44 @@ api.interceptors.response.use(
 );
 
 // API methods for making GET and POST requests
-const getApi = async (url: string, params: any) => {
-	try {
-		const response = await api.get(url, { params });
-		return response.data;
-	} catch (error) {
-		return Promise.reject(error);
-	}
-};
-
-const postApi = async (url: string, data: any) => {
+const getApi = async (url: string, params: any = {}) => {
 	let response = null;
 	let loading = false;
-	let error = null;
 	let status = 404;
+	let error = null;
 	try {
 		loading = true;
-		const res = await api.post(url, data);
-		if (res.status == 201) {
+		const res = await api.get(url, params);
+		loading = false;
+		if (res.status == 200) {
 			response = res.data;
 		}
 		status = res.status;
-		loading = false;
 	} catch (err) {
 		loading = false;
 		error = err;
 	}
-	return { response, status, loading, error };
+	return { response, loading, status, error };
+};
+
+const postApi = async (url: string, data: Object = {}) => {
+	let response = null;
+	let loading = false;
+	let status = 404;
+	let error = null;
+	try {
+		loading = true;
+		const res = await api.post(url, data);
+		loading = false;
+		if (res.status == 201) {
+			response = res.data;
+		}
+		status = res.status;
+	} catch (err) {
+		loading = false;
+		error = err;
+	}
+	return { response, loading, status, error };
 };
 
 const postWithFileApi = async (url: string, data: any) => {
@@ -86,7 +97,7 @@ const postWithFileApi = async (url: string, data: any) => {
 
 const putApi = async (url: string, data: any) => {
 	try {
-		const response = await api.post(url, data);
+		const response = await api.put(url, data);
 		return response.data;
 	} catch (error) {
 		return Promise.reject(error);
@@ -112,7 +123,7 @@ const deleteApi = async (url: string) => {
 		const response = await api.delete(url, {
 			headers: {
 				// 'accept': "*/*",
-				"Content-Type": "application/json", // Set the content type to multipart/form-data
+				"Content-Type": "application/json",
 			},
 		});
 		return response.data;
@@ -121,4 +132,4 @@ const deleteApi = async (url: string) => {
 	}
 };
 
-export { getApi, postApi, postWithFileApi, putApi, putWithFileApi, deleteApi };
+export { getApi };

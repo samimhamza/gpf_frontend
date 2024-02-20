@@ -44,9 +44,11 @@ export const LoginForm = ({ lng }: { lng: string }) => {
 				password: values.password,
 				redirect: false,
 			});
+
 			if (!res?.error) {
 				redirect("/dashboard");
 			}
+			setError(t("invalid_credentials"));
 		});
 	};
 

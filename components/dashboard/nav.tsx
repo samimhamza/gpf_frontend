@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "./nav-item";
 
-export const Nav = (lng: string) => {
+export const Nav = () => {
 	const pathname = usePathname();
 	return (
 		<nav>
@@ -42,7 +42,7 @@ export const Nav = (lng: string) => {
 							>
 								{nav.icon}
 							</span>
-							{nav.title}{" "}
+							{nav.title}
 						</Link>
 					</li>
 				))}

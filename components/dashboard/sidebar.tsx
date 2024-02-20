@@ -6,9 +6,8 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/app/i18n/client";
 import { signOut } from "next-auth/react";
-import { postApi } from "@/http/api-http";
 import { toast } from "react-hot-toast";
-import axios from "axios";
+import { getApi } from "@/http/api-http";
 
 const Sidebar = ({
 	children,
@@ -29,13 +28,11 @@ const Sidebar = ({
 	};
 
 	const logout = async () => {
-		const { status } = await postApi("/logout", {});
-		if (status == 200) {
-			await signOut({
-				redirect: false,
-			});
-			router.push("/auth/login");
-		}
+		const { status } = await getApi("/logout");
+		signOut({
+			redirect: false,
+		});
+		router.push("/auth/login");
 	};
 	return (
 		<div className="relative h-screen  bg-dashboard-content-main-bg text-gray-900">
@@ -71,7 +68,7 @@ const Sidebar = ({
 								viewBox="0 0 448 512"
 								height="1em"
 								width="1em"
-								xmrns="http://www.w3.org/2000/svg"
+								xmlns="http://www.w3.org/2000/svg"
 							>
 								<path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
 							</svg>
@@ -89,7 +86,7 @@ const Sidebar = ({
 										viewBox="0 0 496 512"
 										height="1em"
 										width="1em"
-										xmrns="http://www.w3.org/2000/svg"
+										xmlns="http://www.w3.org/2000/svg"
 									>
 										<path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z" />
 									</svg>
