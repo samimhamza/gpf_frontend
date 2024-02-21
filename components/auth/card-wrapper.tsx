@@ -1,6 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Center, Card, Flex, Box } from "@mantine/core";
+// import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { BackButton } from "./back-button";
 import { Header } from "./header";
 
@@ -18,16 +19,16 @@ export const CardWrapper = ({
 	backButtonLabel,
 }: CardWrapperProps) => {
 	return (
-		<Card className="w-[400px] shadow-md">
-			<CardHeader>
-				<Header label={headerLabel} />
-			</CardHeader>
-			<CardContent>{children}</CardContent>
-			{backButtonHref && backButtonLabel && (
-				<CardFooter>
+		<Flex align="center" justify="center">
+			<Card shadow="sm" padding="lg" radius="md" withBorder>
+				<Center>
+					<Header label={headerLabel} />
+				</Center>
+				{children}
+				{backButtonHref && backButtonLabel && (
 					<BackButton label={backButtonLabel} href={backButtonHref} />
-				</CardFooter>
-			)}
-		</Card>
+				)}
+			</Card>
+		</Flex>
 	);
 };

@@ -1,4 +1,4 @@
-import Sidebar from "@/components/dashboard/sidebar";
+// import Sidebar from "@/components/dashboard/sidebar";
 
 const AdminPanelLayout = ({
 	children,
@@ -9,7 +9,9 @@ const AdminPanelLayout = ({
 }) => {
 	return (
 		<>
-			<Sidebar lng={lng}>{children}</Sidebar>
+			{/* <Sidebar lng={lng}> */}
+			{children}
+			{/* </Sidebar> */}
 		</>
 	);
 };

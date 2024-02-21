@@ -13,6 +13,8 @@ export const Header = ({ label }: HeaderProps) => {
 				className="mx-auto w-28 h-28"
 				src="/images/favicon.png"
 				alt="logo"
+				width="112"
+				height="112"
 			/>
 			<p className="text-muted-foreground text-sm ">{label}</p>
 		</div>

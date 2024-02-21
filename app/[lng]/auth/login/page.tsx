@@ -7,11 +7,7 @@ const LoginPage = async ({
 		lng: string;
 	};
 }) => {
-	return (
-		<div>
-			<LoginForm lng={lng} />
-		</div>
-	);
+	return <LoginForm lng={lng} />;
 };
 
 export default LoginPage;

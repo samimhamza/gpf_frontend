@@ -1,5 +1,8 @@
 import { Inter } from "next/font/google";
 import "../globals.css";
+import "@mantine/core/styles.css";
+
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +26,15 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang={lng} dir={dir(lng)}>
+			<head>
+				<ColorSchemeScript />
+			</head>
 			<body className={inter.className}>
 				<AuthProvider>
-					<Toaster position="bottom-center" />
-					{children}
+					<MantineProvider>
+						<Toaster position="bottom-center" />
+						{children}
+					</MantineProvider>
 				</AuthProvider>
 			</body>
 		</html>
